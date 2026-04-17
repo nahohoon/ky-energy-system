@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}입출고 처리 - KY 에너지관리{% endblock %}
+{% block page_title %}부품 입출고 처리{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card-box">
+      <div class="section-title">입출고 처리</div>
+      <form method="post">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">부품 선택 <span class="text-danger">*</span></label>
+            <select name="part_id" class="form-select" required>
+              <option value="">-- 선택 --</option>
+              {% for p in parts %}
+              <option value="{{ p.id }}">{{ p.name }} (현재: {{ p.stock_qty }}{{ p.unit }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">구분 <span class="text-danger">*</span></label>
+            <div class="d-flex gap-2">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="in_out" id="inRadio" value="입고" checked>
+                <label class="form-check-label text-success fw-semibold" for="inRadio">입고</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="in_out" id="outRadio" value="출고">
+                <label class="form-check-label text-danger fw-semibold" for="outRadio">출고</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">수량 <span class="text-danger">*</span></label>
+            <input type="number" name="qty" class="form-control" value="1" min="1" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">사유</label>
+            <input type="text" name="reason" class="form-control" placeholder="예: 설비 #1 필터 교체">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">담당자</label>
+            <input type="text" name="worker" class="form-control" placeholder="홍길동">
+          </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>처리</button>
+          <a href="/inventory" class="btn btn-outline-secondary">취소</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

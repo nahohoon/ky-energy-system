@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}정비관리 - KY 에너지관리{% endblock %}
+{% block page_title %}정비관리{% endblock %}
+
+{% block content %}
+
+{% if upcoming %}
+<div class="alert alert-warning d-flex align-items-center gap-2 mb-3" style="font-size:.88rem;">
+  <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+  <div>
+    <strong>점검 임박 알림:</strong>
+    {% for u in upcoming %}
+      <span class="badge bg-warning text-dark me-1">
+        {{ u.equipment.name if u.equipment else '-' }} – {{ u.next_date }}
+      </span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <form method="get" class="d-flex gap-2 align-items-center">
+    <select name="eq_id" class="form-select form-select-sm" style="width:220px;">
+      <option value="">전체 설비</option>
+      {% for e in equipments %}
+      <option value="{{ e.id }}" {% if eq_id == e.id %}selected{% endif %}>{{ e.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">조회</button>
+  </form>
+  <a href="/maintenance/new" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>정비 이력 등록</a>
+</div>
+
+<div class="card-box">
+  <div class="card-title"><i class="bi bi-tools text-warning"></i> 정비 이력 ({{ logs|length }}건)</div>
+  <div class="table-responsive">
+    <table class="table table-hover table-clean mb-0">
+      <thead>
+        <tr>
+          <th>정비일</th><th>설비</th><th>정비유형</th><th>내용</th>
+          <th>비용(원)</th><th>담당자</th><th>다음점검일</th>
+          <th>D-day</th><th>삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        {% set days_left = (log.next_date - today).days if log.next_date else None %}
+        <tr {% if days_left is not none and days_left <= 7 %}class="table-warning"{% endif %}>
+          <td>{{ log.maint_date }}</td>
+          <td>{{ log.equipment.name if log.equipment else '-' }}</td>
+          <td><span class="badge bg-light text-dark border">{{ log.maint_type }}</span></td>
+          <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ log.description }}</td>
+          <td>{{ "{:,.0f}".format(log.cost) }}</td>
+          <td>{{ log.worker }}</td>
+          <td>{{ log.next_date or '-' }}</td>
+          <td>
+            {% if days_left is not none %}
+              {% if days_left < 0 %}
+                <span class="badge bg-danger">D+{{ days_left|abs }}</span>
+              {% elif days_left == 0 %}
+                <span class="badge bg-danger">오늘</span>
+              {% elif days_left <= 7 %}
+                <span class="badge bg-warning text-dark">D-{{ days_left }}</span>
+              {% else %}
+                <span class="badge bg-light text-muted">D-{{ days_left }}</span>
+              {% endif %}
+            {% else %} - {% endif %}
+          </td>
+          <td>
+            <form action="/maintenance/{{ log.id }}/delete" method="post" onsubmit="return confirm('삭제?');">
+              <button class="btn btn-xs btn-outline-danger" style="font-size:.72rem;padding:2px 6px;">삭제</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="text-center text-muted py-4">데이터가 없습니다.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
