@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}스마트 에너지 운영관리 시스템{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --purple: #7c3aed;
+      --cyan: #0891b2;
+      --sidebar-bg: #0f172a;
+      --sidebar-w: 250px;
+      --topbar-h: 62px;
+      --card-radius: 14px;
+      --card-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+      --card-border: #e2e8f0;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      background: #f1f5f9;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 14px;
+      color: #1e293b;
+    }
+    #sidebar {
+      position: fixed; top: 0; left: 0;
+      width: var(--sidebar-w); height: 100vh;
+      background: var(--sidebar-bg);
+      display: flex; flex-direction: column;
+      z-index: 1050; overflow-y: auto;
+      border-right: 1px solid rgba(255,255,255,.05);
+    }
+    .sb-brand { padding: 22px 20px 18px; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .sb-brand .logo-wrap { display: flex; align-items: center; gap: 10px; }
+    .sb-brand .logo-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: #fff;
+    }
+    .sb-brand .logo-text h6 { color: #f1f5f9; font-weight: 700; margin: 0; font-size: .88rem; line-height: 1.2; }
+    .sb-brand .logo-text small { color: #64748b; font-size: .7rem; }
+    .sb-version {
+      margin: 0 14px 6px;
+      background: rgba(255,255,255,.04);
+      border-radius: 8px; padding: 8px 12px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .sb-version span { color: #475569; font-size: .7rem; }
+    .sb-version .v-badge {
+      background: rgba(37,99,235,.25); color: #93c5fd;
+      font-size: .68rem; padding: 2px 8px; border-radius: 20px; font-weight: 600;
+    }
+    .sb-section {
+      font-size: .67rem; font-weight: 700; color: #475569;
+      padding: 14px 20px 5px; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .sb-link {
+      display: flex; align-items: center; gap: 10px;
+      color: #94a3b8; padding: 9px 18px 9px 20px;
+      font-size: .84rem; font-weight: 500;
+      text-decoration: none; border-left: 3px solid transparent;
+      transition: all .15s;
+    }
+    .sb-link i { font-size: .95rem; width: 18px; text-align: center; }
+    .sb-link:hover { color: #f1f5f9; background: rgba(255,255,255,.05); }
+    .sb-link.active { color: #f1f5f9; background: rgba(37,99,235,.18); border-left-color: #2563eb; }
+    .sb-footer { margin-top: auto; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,.06); }
+    .sb-footer-card { background: rgba(255,255,255,.05); border-radius: 10px; padding: 12px 14px; }
+    .sb-footer-card .co-name { color: #cbd5e1; font-size: .78rem; font-weight: 600; }
+    .sb-footer-card .sys-name { color: #475569; font-size: .68rem; margin-top: 2px; }
+    #main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+    .topbar {
+      position: sticky; top: 0; z-index: 900;
+      height: var(--topbar-h);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 28px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar-left .page-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: var(--primary);
+    }
+    .topbar-left .page-title { font-size: 1.05rem; font-weight: 700; color: #0f172a; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .sys-badge {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      color: var(--primary); font-size: .72rem; font-weight: 700;
+      padding: 5px 12px; border-radius: 20px;
+      border: 1px solid #bfdbfe;
+    }
+    .date-chip {
+      font-size: .78rem; color: #64748b;
+      background: #f8fafc; border: 1px solid #e2e8f0;
+      padding: 4px 10px; border-radius: 8px;
+    }
+    .content-area { flex: 1; padding: 24px 28px 32px; }
+    .identity-banner {
+      background: linear-gradient(135deg,#eff6ff,#f8fafc);
+      border: 1px solid #dbeafe;
+      color: #1d4ed8;
+      font-size: .88rem;
+      font-weight: 700;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(37,99,235,.05);
+    }
+    .card-box {
+      background: #fff;
+      border-radius: var(--card-radius);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      padding: 22px 24px;
+    }
+    .card-box:hover { box-shadow: 0 2px 6px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08); }
+    .card-title {
+      font-size: .88rem; font-weight: 700; color: #0f172a;
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title i { font-size: 1rem; }
+    .kpi-card {
+      background: #fff;
+      border-radius: var(--card-radius);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      padding: 20px 22px;
+      position: relative; overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,.1); }
+    .kpi-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--kpi-color, #2563eb);
+      border-radius: var(--card-radius) var(--card-radius) 0 0;
+    }
+    .kpi-card .kpi-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.35rem; margin-bottom: 14px;
+      background: var(--kpi-bg, #eff6ff);
+      color: var(--kpi-color, #2563eb);
+    }
+    .kpi-card .kpi-label { font-size: .76rem; color: #64748b; font-weight: 600; letter-spacing: .02em; }
+    .kpi-card .kpi-value {
+      font-size: 1.95rem; font-weight: 800; color: #0f172a;
+      line-height: 1.15; margin: 4px 0;
+    }
+    .kpi-card .kpi-value .unit { font-size: .9rem; font-weight: 500; color: #64748b; margin-left: 3px; }
+    .kpi-card .kpi-sub { font-size: .76rem; color: #94a3b8; margin-top: 2px; }
+    .kpi-card .kpi-trend {
+      font-size: .76rem; font-weight: 600; margin-top: 8px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .money-highlight {
+      font-size: 2.4rem; font-weight: 900; line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .money-purple { color: #7c3aed; }
+    .money-green { color: #059669; }
+    .section-title {
+      font-size: .95rem; font-weight: 700; color: #0f172a;
+      border-left: 4px solid var(--primary);
+      padding-left: 12px; margin-bottom: 20px;
+    }
+    .table-clean th {
+      font-size: .75rem; color: #64748b; font-weight: 700;
+      background: #f8fafc; letter-spacing: .03em;
+      border-bottom: 1px solid #e2e8f0; padding: 10px 12px;
+    }
+    .table-clean td { font-size: .83rem; vertical-align: middle; padding: 10px 12px; color: #334155; }
+    .table-clean tbody tr:hover { background: #f8fafc; }
+    .table-clean tbody tr:last-child td { border-bottom: none; }
+    .badge-run { background: #dcfce7; color: #15803d; font-weight: 600; }
+    .badge-stop { background: #fee2e2; color: #b91c1c; font-weight: 600; }
+    .badge-check { background: #fef9c3; color: #a16207; font-weight: 600; }
+    .grade-A { background: #dcfce7; color: #166534; }
+    .grade-B { background: #dbeafe; color: #1d4ed8; }
+    .grade-C { background: #fef9c3; color: #92400e; }
+    .grade-D { background: #fee2e2; color: #991b1b; }
+    .sim-before { background: linear-gradient(135deg,#fef2f2,#fee2e2); border-radius: 12px; padding: 16px; }
+    .sim-after { background: linear-gradient(135deg,#f0fdf4,#dcfce7); border-radius: 12px; padding: 16px; }
+    .sim-result { background: linear-gradient(135deg,#eff6ff,#dbeafe); border-radius: 12px; padding: 16px; }
+    .sim-co2 { background: linear-gradient(135deg,#f0fdf4,#bbf7d0); border-radius: 12px; padding: 16px; }
+    .impact-number { font-size: 2.6rem; font-weight: 800; line-height: 1; }
+    .impact-label { font-size: .75rem; font-weight: 700; letter-spacing: .04em; }
+    .low-stock td { background: #fffbeb !important; }
+    .form-label { font-size: .82rem; font-weight: 600; color: #374151; margin-bottom: 5px; }
+    .form-control, .form-select {
+      border-color: #e2e8f0; border-radius: 8px;
+      font-size: .85rem; color: #1e293b;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    .progress-bar-custom { height: 6px; border-radius: 3px; background: #e2e8f0; overflow: hidden; }
+    .progress-bar-custom .fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #2563eb, #7c3aed); }
+    .tag-chip {
+      display: inline-block; font-size: .72rem; font-weight: 600;
+      padding: 2px 9px; border-radius: 20px;
+      background: #f1f5f9; color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    @media(max-width:768px){
+      #sidebar { width:0; overflow:hidden; }
+      #main { margin-left:0; }
+      .content-area { padding: 16px; }
+      .money-highlight { font-size: 1.8rem; }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sb-brand">
+    <div class="logo-wrap">
+      <div class="logo-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+      <div class="logo-text">
+        <h6>KY 에너지관리</h6>
+        <small>Smart Energy Management</small>
+      </div>
+    </div>
+  </div>
+  <div style="padding:10px 14px 4px;">
+    <div class="sb-version">
+      <span>케이와이산업(주)</span>
+      <span class="v-badge">v4 Demo</span>
+    </div>
+  </div>
+  <div class="sb-section">메인</div>
+  <a href="/" class="sb-link {% if request.endpoint=='dashboard.index' %}active{% endif %}"><i class="bi bi-speedometer2"></i> 대시보드</a>
+  <div class="sb-section">설비 운영</div>
+  <a href="/equipment/" class="sb-link {% if 'equipment' in (request.endpoint or '') %}active{% endif %}"><i class="bi bi-cpu"></i> 설비관리</a>
+  <a href="/operation/" class="sb-link {% if 'operation' in (request.endpoint or '') %}active{% endif %}"><i class="bi bi-activity"></i> 운전데이터</a>
+  <div class="sb-section">에너지 관리</div>
+  <a href="/energy/" class="sb-link {% if 'energy' in (request.endpoint or '') %}active{% endif %}"><i class="bi bi-graph-up-arrow"></i> 에너지 분석</a>
+  <a href="/simulation/" class="sb-link {% if 'simulation' in (request.endpoint or '') %}active{% endif %}"><i class="bi bi-calculator"></i> 절감 시뮬레이션</a>
+  <div class="sb-section">유지보수</div>
+  <a href="/maintenance/" class="sb-link {% if 'maintenance' in (request.endpoint or '') %}active{% endif %}"><i class="bi bi-tools"></i> 정비관리</a>
+  <div class="sb-section">재고</div>
+  <a href="/inventory/" class="sb-link {% if 'inventory' in (request.endpoint or '') %}active{% endif %}"><i class="bi bi-box-seam"></i> 부품재고관리</a>
+  <div class="sb-footer">
+    <div class="sb-footer-card">
+      <div class="co-name"><i class="bi bi-building me-1"></i>케이와이산업(주)</div>
+      <div class="sys-name">Energy Saving Solution Demo</div>
+    </div>
+  </div>
+</nav>
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-icon"><i class="{% block page_icon %}bi bi-speedometer2{% endblock %}"></i></div>
+      <span class="page-title">{% block page_title %}대시보드{% endblock %}</span>
+    </div>
+    <div class="topbar-right">
+      <span class="sys-badge"><i class="bi bi-lightning-charge me-1"></i>에너지 절감 솔루션</span>
+      <span class="date-chip" id="today-date"></span>
+    </div>
+  </div>
+  <div class="content-area">
+    <div class="identity-banner">
+      <i class="bi bi-stars me-2"></i>
+      설비 운영 데이터를 기반으로 에너지 낭비를 분석하고 절감 효과를 예측하는 시스템
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}{% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }} alert-dismissible fade show mb-3" role="alert" style="font-size:.85rem;border-radius:10px;">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}{% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('today-date').textContent =
+  new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

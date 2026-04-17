@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}대시보드 — KY 에너지 절감 솔루션{% endblock %}
+{% block page_icon %}bi bi-speedometer2{% endblock %}
+{% block page_title %}에너지 절감 솔루션 대시보드{% endblock %}
+
+{% block extra_head %}
+<style>
+.solution-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #0891b2 100%);
+  color: #fff; border-radius: 18px; padding: 24px 26px;
+  box-shadow: 0 10px 30px rgba(37,99,235,.18);
+}
+.solution-hero .hero-eyebrow { font-size:.75rem; font-weight:700; letter-spacing:.09em; color:#bfdbfe; }
+.solution-hero .hero-title { font-size:1.65rem; font-weight:800; line-height:1.25; margin-top:6px; }
+.solution-hero .hero-desc  { font-size:.88rem; color:#dbeafe; margin-top:8px; }
+.solution-bullet { background: rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px 14px; height:100%; }
+.solution-bullet .label { font-size:.72rem; color:#bfdbfe; font-weight:700; }
+.solution-bullet .value { font-size:1.3rem; font-weight:800; margin-top:4px; }
+.solution-note { background:#eff6ff; color:#1d4ed8; font-size:.78rem; font-weight:700; border-radius:10px; padding:8px 12px; }
+.priority-card { border-left:5px solid #f59e0b; background:#fffaf0; }
+.maint-card { border-left:5px solid #dc2626; background:#fff5f5; }
+.insight-box { border-radius:12px; padding:14px 16px; border:1px solid #e2e8f0; background:#fff; }
+.insight-title { font-size:.78rem; font-weight:700; color:#64748b; margin-bottom:6px; }
+.insight-value { font-size:1.45rem; font-weight:800; color:#0f172a; }
+.compare-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="solution-hero mb-3">
+  <div class="row g-3 align-items-center">
+    <div class="col-lg-7">
+      <div class="hero-eyebrow">ENERGY SAVING SOLUTION DEMO</div>
+      <div class="hero-title">설비 운영 데이터를 기반으로 에너지 낭비를 분석하고 절감 효과를 예측하는 시스템</div>
+      <div class="hero-desc">관리 기능보다 절감 효과와 개선 우선순위를 먼저 보여주어 고객이 5분 이내에 핵심 가치를 이해하도록 구성했습니다.</div>
+    </div>
+    <div class="col-lg-5">
+      <div class="row g-2">
+        <div class="col-6">
+          <div class="solution-bullet text-center">
+            <div class="label">월 예상 절감액</div>
+            <div class="value money-highlight" style="color:#fde68a;">{{ "{:,.0f}".format(total_saving) }}원</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="solution-bullet text-center">
+            <div class="label">연간 예상 절감액</div>
+            <div class="value money-highlight" style="color:#bbf7d0;">{{ "{:,.0f}".format(total_saving * 12) }}원</div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="solution-bullet text-center">
+            <div class="label">누적 CO₂ 절감 효과</div>
+            <div class="value">{{ total_co2 }} tCO₂</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-6 col-lg-3"><div class="kpi-card" style="--kpi-color:#2563eb;--kpi-bg:#eff6ff;"><div class="kpi-icon"><i class="bi bi-cpu-fill"></i></div><div class="kpi-label">총 설비 수</div><div class="kpi-value">{{ total_eq }}<span class="unit">대</span></div><div class="kpi-sub">등록 기준 전체 설비</div><div class="kpi-trend" style="color:#64748b;">가동 {{ running_eq }} / 점검 {{ check_eq }} / 정지 {{ stop_eq }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="kpi-card" style="--kpi-color:#059669;--kpi-bg:#f0fdf4;"><div class="kpi-icon"><i class="bi bi-lightning-charge-fill"></i></div><div class="kpi-label">가동 설비 수</div><div class="kpi-value">{{ running_eq }}<span class="unit">대</span></div><div class="kpi-sub">즉시 진단 가능한 설비</div><div class="kpi-trend" style="color:#059669;">가동률 {% if total_eq %}{{ "%.0f"|format(running_eq/total_eq*100) }}%{% else %}0%{% endif %}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="kpi-card" style="--kpi-color:#d97706;--kpi-bg:#fffbeb;"><div class="kpi-icon"><i class="bi bi-plug-fill"></i></div><div class="kpi-label">월 전력사용량</div><div class="kpi-value">{{ "{:,.0f}".format(month_kwh) }}<span class="unit">kWh</span></div><div class="kpi-sub">{{ today.strftime('%Y-%m') }} 누계</div><div class="kpi-trend" style="color:{% if kwh_diff <= 0 %}#059669{% else %}#dc2626{% endif %};">전월 대비 {{ "{:+,.0f}".format(kwh_diff) }} kWh</div></div></div>
+  <div class="col-6 col-lg-3"><div class="kpi-card" style="--kpi-color:#7c3aed;--kpi-bg:#f5f3ff;"><div class="kpi-icon"><i class="bi bi-piggy-bank-fill"></i></div><div class="kpi-label">예상 절감액</div><div class="kpi-value money-highlight money-purple">{{ "{:,.0f}".format(total_saving) }}<span class="unit">원/월</span></div><div class="kpi-sub">고객 설득용 핵심 수치</div><div class="kpi-trend" style="color:#7c3aed;">연 {{ "{:,.0f}".format(total_saving*12) }}원 절감 가능</div></div></div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-7"><div class="card-box h-100"><div class="card-title"><i class="bi bi-bar-chart-fill text-primary"></i> 설비별 전력사용량 그래프 <span class="solution-note ms-auto">전력 다소비 설비 우선 제안</span></div><canvas id="chartEquipPower" height="165"></canvas></div></div>
+  <div class="col-lg-5"><div class="card-box h-100"><div class="card-title"><i class="bi bi-graph-up-arrow text-success"></i> 월별 전력 추이 그래프 <span class="solution-note ms-auto">최근 6개월</span></div><canvas id="chartMonthlyPower" height="165"></canvas></div></div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-6">
+    <div class="card-box priority-card h-100">
+      <div class="card-title"><i class="bi bi-exclamation-triangle-fill" style="color:#f59e0b;"></i> 비효율 설비 TOP 3 <span class="tag-chip ms-auto">{{ analysis_base_month }}</span></div>
+      {% if top_inefficient %}
+        {% for item in top_inefficient %}
+        <div class="insight-box mb-2">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="insight-title">{{ item.name }}</div>
+              <div style="font-size:.84rem;color:#475569;">효율 상태: <strong>{{ item.status_text }}</strong></div>
+              <div style="font-size:.83rem;color:#475569;">코멘트: {{ item.comment }}</div>
+              <div style="font-size:.83rem;color:#dc2626;font-weight:700;margin-top:4px;">절감 가능성이 높은 설비입니다.</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="insight-value" style="font-size:1.15rem;color:#7c3aed;">{{ "{:,.0f}".format(item.saving_amount or 0) }}원</div>
+              <div style="font-size:.72rem;color:#94a3b8;">월 예상 절감액</div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-muted">표시할 비효율 설비가 없습니다.</div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card-box maint-card h-100">
+      <div class="card-title"><i class="bi bi-tools" style="color:#dc2626;"></i> 정비 필요 설비 <span class="solution-note ms-auto">30일 이내</span></div>
+      {% if upcoming_maint %}
+        {% for u in upcoming_maint %}
+        <div class="insight-box mb-2" style="background:#fff;">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="insight-title">{{ u.equipment.name if u.equipment else '—' }}</div>
+              <div style="font-size:.84rem;color:#475569;">다음 점검일 {{ u.next_date }}</div>
+              <div style="font-size:.82rem;color:#dc2626;font-weight:700;margin-top:4px;">정비 점검 제안이 필요한 설비입니다.</div>
+            </div>
+            <div style="text-align:right;"><div class="insight-value" style="font-size:1.15rem;color:#dc2626;">D-{{ (u.next_date - today).days }}</div><div style="font-size:.72rem;color:#94a3b8;">점검 예정</div></div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-muted">임박한 정비 설비가 없습니다.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7"><div class="card-box"><div class="card-title"><i class="bi bi-activity text-info"></i> 최근 운전 로그</div><div class="table-responsive"><table class="table table-clean mb-0"><thead><tr><th>일자</th><th>설비</th><th>가동(h)</th><th>전력(kWh)</th><th>부하율</th><th>압력</th></tr></thead><tbody>{% for log in recent_logs %}<tr><td>{{ log.log_date }}</td><td>{{ log.equipment.name if log.equipment else '—' }}</td><td>{{ log.run_hours }}</td><td class="fw-semibold">{{ log.power_kwh }}</td><td>{% set lr = log.load_rate or 0 %}<span class="badge {% if lr > 80 %}bg-danger{% elif lr > 65 %}bg-warning text-dark{% else %}bg-success{% endif %}">{{ lr }}%</span></td><td>{{ log.pressure }}</td></tr>{% endfor %}</tbody></table></div></div></div>
+  <div class="col-lg-5"><div class="card-box"><div class="card-title"><i class="bi bi-calculator text-primary"></i> 절감 시뮬레이션 요약</div><div style="background:#eff6ff;border-radius:12px;padding:12px 14px;margin-bottom:12px;"><div style="font-size:.75rem;color:#64748b;font-weight:700;">이번 달 예상 절감액</div><div class="money-highlight money-purple">{{ "{:,.0f}".format(total_sim_saving) }}원</div><div style="font-size:.75rem;color:#64748b;font-weight:700;margin-top:8px;">연간 예상 절감액</div><div class="money-highlight money-green" style="font-size:2rem;">{{ "{:,.0f}".format(total_sim_saving*12) }}원</div></div>{% for sim in sims %}<div class="compare-box mb-2"><div class="d-flex justify-content-between"><div><div style="font-size:.83rem;font-weight:700;">{{ sim.title|truncate(30,True,'..') }}</div><div style="font-size:.74rem;color:#64748b;">기존 {{ "{:,.0f}".format(sim.before_kwh) }} → 개선 {{ "{:,.0f}".format(sim.after_kwh) }} kWh</div></div><div style="text-align:right;"><div style="font-size:1.05rem;font-weight:800;color:#059669;">{{ "{:,.0f}".format(sim.saving_amount) }}원</div><div style="font-size:.7rem;color:#94a3b8;">절감률 {% if sim.before_kwh %}{{ "%.1f"|format(sim.saving_kwh / sim.before_kwh * 100) }}%{% else %}-{% endif %}</div></div></div></div>{% endfor %}</div></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+Chart.defaults.font.family = "'Noto Sans KR', sans-serif";
+Chart.defaults.font.size = 12;
+const epLabels = [{% for r in equip_power %}"{{ r.name|truncate(14,True,'..') }}"{% if not loop.last %},{% endif %}{% endfor %}];
+const epData   = [{% for r in equip_power %}{{ r.total|round(1) if r.total else 0 }}{% if not loop.last %},{% endif %}{% endfor %}];
+new Chart(document.getElementById('chartEquipPower'), {type:'bar',data:{labels:epLabels,datasets:[{label:'kWh',data:epData,backgroundColor:['#2563eb','#7c3aed','#059669','#d97706','#0891b2'],borderRadius:8,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#f1f5f9'},ticks:{callback:v=>v.toLocaleString()}},y:{grid:{display:false}}}}});
+const mpLabels = [{% for r in monthly_power %}"{{ r.analysis_month }}"{% if not loop.last %},{% endif %}{% endfor %}];
+const mpKwh = [{% for r in monthly_power %}{{ (r.kwh|round(1)) if r.kwh else 0 }}{% if not loop.last %},{% endif %}{% endfor %}];
+const mpSaving = [{% for r in monthly_power %}{{ (r.saving|round(1)) if r.saving else 0 }}{% if not loop.last %},{% endif %}{% endfor %}];
+new Chart(document.getElementById('chartMonthlyPower'), {type:'line',data:{labels:mpLabels,datasets:[{label:'전력사용(kWh)',data:mpKwh,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:.35,pointRadius:4,borderWidth:2.5},{label:'절감가능(kWh)',data:mpSaving,borderColor:'#059669',backgroundColor:'rgba(5,150,105,.05)',fill:true,tension:.35,pointRadius:4,borderWidth:2,borderDash:[5,4]}]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,grid:{color:'#f1f5f9'},ticks:{callback:v=>v.toLocaleString()}},x:{grid:{display:false}}}}});
+</script>
+{% endblock %}

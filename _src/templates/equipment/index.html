@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}설비관리 - KY 에너지관리{% endblock %}
+{% block page_title %}설비관리{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex gap-2">
+    <a href="?status=" class="btn btn-sm {% if not status_filter %}btn-primary{% else %}btn-outline-secondary{% endif %}">전체</a>
+    <a href="?status=가동중" class="btn btn-sm {% if status_filter=='가동중' %}btn-success{% else %}btn-outline-secondary{% endif %}">가동중</a>
+    <a href="?status=정지" class="btn btn-sm {% if status_filter=='정지' %}btn-danger{% else %}btn-outline-secondary{% endif %}">정지</a>
+    <a href="?status=점검중" class="btn btn-sm {% if status_filter=='점검중' %}btn-warning{% else %}btn-outline-secondary{% endif %}">점검중</a>
+  </div>
+  <a href="/equipment/new" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>설비 등록</a>
+</div>
+
+<div class="card-box">
+  <div class="card-title"><i class="bi bi-cpu text-primary"></i> 설비 목록 ({{ equipments|length }}대)</div>
+  <div class="table-responsive">
+    <table class="table table-hover table-clean mb-0">
+      <thead>
+        <tr>
+          <th>#</th><th>설비명</th><th>모델</th><th>마력(HP)</th><th>정격전력(kW)</th>
+          <th>설치장소</th><th>상태</th><th>설치일</th><th>관리</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for eq in equipments %}
+        <tr>
+          <td class="text-muted">{{ loop.index }}</td>
+          <td><a href="/equipment/{{ eq.id }}" class="text-decoration-none fw-semibold">{{ eq.name }}</a></td>
+          <td>{{ eq.model or '-' }}</td>
+          <td>{{ eq.horsepower or '-' }}</td>
+          <td>{{ eq.rated_power or '-' }}</td>
+          <td>{{ eq.install_loc or '-' }}</td>
+          <td>
+            {% if eq.status == '가동중' %}
+              <span class="badge badge-run px-2 py-1"><i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>가동중</span>
+            {% elif eq.status == '점검중' %}
+              <span class="badge badge-check px-2 py-1"><i class="bi bi-wrench me-1"></i>점검중</span>
+            {% else %}
+              <span class="badge badge-stop px-2 py-1"><i class="bi bi-pause-fill me-1"></i>정지</span>
+            {% endif %}
+          </td>
+          <td>{{ eq.install_date or '-' }}</td>
+          <td>
+            <a href="/equipment/{{ eq.id }}/edit" class="btn btn-xs btn-outline-secondary" style="font-size:.75rem;padding:2px 8px;">수정</a>
+            <form action="/equipment/{{ eq.id }}/delete" method="post" class="d-inline"
+                  onsubmit="return confirm('삭제하시겠습니까?');">
+              <button class="btn btn-xs btn-outline-danger" style="font-size:.75rem;padding:2px 8px;">삭제</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="text-center text-muted py-4">등록된 설비가 없습니다.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

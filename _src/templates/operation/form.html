@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}운전 로그 입력 - KY 에너지관리{% endblock %}
+{% block page_title %}운전 로그 입력{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card-box">
+      <div class="section-title">운전 데이터 입력</div>
+      <form method="post">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">설비 선택 <span class="text-danger">*</span></label>
+            <select name="equipment_id" class="form-select" required>
+              <option value="">-- 선택 --</option>
+              {% for e in equipments %}
+              <option value="{{ e.id }}">{{ e.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">일자 <span class="text-danger">*</span></label>
+            <input type="date" name="log_date" class="form-control" value="{{ today }}" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">가동시간 (h)</label>
+            <input type="number" name="run_hours" class="form-control" step="0.1" placeholder="예: 20.5">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">전력사용량 (kWh)</label>
+            <input type="number" name="power_kwh" class="form-control" step="0.1" placeholder="예: 520.0">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">부하율 (%)</label>
+            <input type="number" name="load_rate" class="form-control" step="0.1" min="0" max="100" placeholder="예: 72.5">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">압력 (kgf/cm²)</label>
+            <input type="number" name="pressure" class="form-control" step="0.01" placeholder="예: 7.0">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">주파수 (Hz)</label>
+            <input type="number" name="frequency" class="form-control" step="0.1" placeholder="예: 55.0">
+          </div>
+          <div class="col-12">
+            <label class="form-label">메모</label>
+            <textarea name="memo" class="form-control" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>저장</button>
+          <a href="/operation" class="btn btn-outline-secondary">취소</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}시뮬레이션 상세 — KY 에너지 절감 솔루션{% endblock %}
+{% block page_icon %}bi bi-calculator{% endblock %}
+{% block page_title %}절감 시뮬레이션 상세{% endblock %}
+
+{% block content %}
+{% set payback_months = 8.0 if sim.saving_amount else 0 %}
+<div class="d-flex justify-content-between mb-3">
+  <a href="/simulation/" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>목록</a>
+  <form action="/simulation/{{ sim.id }}/delete" method="post" onsubmit="return confirm('삭제?');">
+    <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>삭제</button>
+  </form>
+</div>
+
+<div class="card-box mb-3" style="background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1px solid #dbeafe;">
+  <div class="row align-items-center g-3">
+    <div class="col-lg-6">
+      <div style="font-size:.8rem;font-weight:700;color:#64748b;letter-spacing:.05em;">SIMULATION IMPACT</div>
+      <h3 style="font-weight:800;color:#0f172a;margin:6px 0 8px;">{{ sim.title }}</h3>
+      <div style="font-size:.88rem;color:#64748b;">설비 운영 데이터를 기반으로 에너지 낭비를 분석하고 절감 효과를 예측하는 시스템</div>
+      <div style="margin-top:12px;background:rgba(255,255,255,.6);border-radius:10px;padding:12px 14px;font-size:.84rem;color:#475569;">
+        <i class="bi bi-megaphone text-primary me-1"></i>절감효과가 수치로 명확하여 고객 설득용 시나리오로 활용하기 적합합니다.
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="row g-2 text-center">
+        <div class="col-6"><div class="sim-result h-100"><div class="impact-label" style="color:#2563eb;">월 예상 절감액</div><div class="money-highlight money-purple">{{ "{:,.0f}".format(sim.saving_amount) }}원</div></div></div>
+        <div class="col-6"><div class="sim-after h-100"><div class="impact-label" style="color:#059669;">연간 예상 절감액</div><div class="money-highlight money-green">{{ "{:,.0f}".format(sim.saving_amount * 12) }}원</div></div></div>
+        <div class="col-6"><div class="sim-co2 h-100 text-center"><div class="impact-label" style="color:#15803d;">CO₂ 절감량</div><div style="font-size:1.9rem;font-weight:800;color:#15803d;line-height:1;">{{ sim.co2_saving }}</div><div style="font-size:.75rem;color:#64748b;">tCO₂ / 월</div></div></div>
+        <div class="col-6"><div class="sim-before h-100 text-center"><div class="impact-label" style="color:#b91c1c;">투자 회수 기간</div><div style="font-size:1.9rem;font-weight:800;color:#b91c1c;line-height:1;">약 {{ "%.1f"|format(payback_months) }}개월</div><div style="font-size:.75rem;color:#64748b;">Payback Period</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-4"><div class="sim-before text-center h-100"><div style="font-size:.78rem;font-weight:700;color:#b91c1c;">기존 전력사용량</div><div style="font-size:2.1rem;font-weight:800;color:#b91c1c;line-height:1.1;">{{ "{:,.0f}".format(sim.before_kwh) }}</div><div style="font-size:.8rem;color:#64748b;">kWh / 월</div></div></div>
+  <div class="col-lg-4"><div class="sim-after text-center h-100"><div style="font-size:.78rem;font-weight:700;color:#15803d;">개선 후 전력사용량</div><div style="font-size:2.1rem;font-weight:800;color:#15803d;line-height:1.1;">{{ "{:,.0f}".format(sim.after_kwh) }}</div><div style="font-size:.8rem;color:#64748b;">kWh / 월</div></div></div>
+  <div class="col-lg-4"><div class="sim-result text-center h-100"><div style="font-size:.78rem;font-weight:700;color:#2563eb;">절감률</div><div style="font-size:2.1rem;font-weight:800;color:#2563eb;line-height:1.1;">{% if sim.before_kwh %}{{ "%.1f"|format(sim.saving_kwh / sim.before_kwh * 100) }}%{% else %}-{% endif %}</div><div style="font-size:.8rem;color:#64748b;">개선 효과</div></div></div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-6"><div class="card-box"><div class="card-title"><i class="bi bi-cash-coin text-primary"></i> 금액 중심 효과</div><div style="font-size:.8rem;color:#64748b;font-weight:700;">월 예상 절감액</div><div class="money-highlight money-purple">{{ "{:,.0f}".format(sim.saving_amount) }}원</div><div style="font-size:.8rem;color:#64748b;font-weight:700;margin-top:10px;">연간 예상 절감액</div><div class="money-highlight money-green" style="font-size:2rem;">{{ "{:,.0f}".format(sim.saving_amount * 12) }}원</div></div></div>
+  <div class="col-lg-6"><div class="card-box"><div class="card-title"><i class="bi bi-chat-left-text text-success"></i> 영업 설명 문구</div><div style="font-size:.92rem;color:#334155;line-height:1.7;">기존 <strong>{{ "{:,.0f}".format(sim.before_kwh) }} kWh</strong> 사용량을 개선 후 <strong>{{ "{:,.0f}".format(sim.after_kwh) }} kWh</strong> 수준으로 낮출 경우,<br><span style="color:#7c3aed;font-weight:800;">월 {{ "{:,.0f}".format(sim.saving_amount) }}원</span>, <span style="color:#059669;font-weight:800;">연 {{ "{:,.0f}".format(sim.saving_amount * 12) }}원</span> 절감이 기대됩니다.<br>예상 투자 회수 기간은 <strong style="color:#d97706;">약 {{ "%.1f"|format(payback_months) }}개월</strong>입니다.</div></div></div>
+</div>
+
+<div class="card-box mb-3">
+  <div class="card-title"><i class="bi bi-bar-chart-fill text-primary"></i> 개선 전 vs 개선 후 비교</div>
+  <canvas id="simChart" height="120"></canvas>
+</div>
+
+{% if sim.memo %}
+<div class="card-box">
+  <div class="card-title"><i class="bi bi-info-circle text-primary"></i> 시나리오 메모</div>
+  <div style="font-size:.88rem;color:#475569;">{{ sim.memo }}</div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+Chart.defaults.font.family = "'Noto Sans KR', sans-serif";
+new Chart(document.getElementById('simChart'), {
+  type: 'bar',
+  data: {
+    labels: ['기존 전력사용량', '개선 후 전력사용량', '절감률(%)'],
+    datasets: [{
+      data: [{{ sim.before_kwh }}, {{ sim.after_kwh }}, {% if sim.before_kwh %}{{ (sim.saving_kwh / sim.before_kwh * 100)|round(1) }}{% else %}0{% endif %}],
+      backgroundColor: ['#dc2626', '#059669', '#2563eb'],
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { callback: v => v.toLocaleString() } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+</script>
+{% endblock %}
