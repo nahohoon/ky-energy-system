@@ -1,128 +1,620 @@
 {% extends 'base.html' %}
-{% block title %}대시보드 — KY 에너지 절감 솔루션{% endblock %}
+{% block title %}대시보드 — 에너지 비용 절감 솔루션{% endblock %}
 {% block page_icon %}bi bi-speedometer2{% endblock %}
-{% block page_title %}에너지 절감 솔루션 대시보드{% endblock %}
+{% block page_title %}에너지 비용 절감 솔루션 대시보드{% endblock %}
 
 {% block extra_head %}
 <style>
-.solution-hero {
-  background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #0891b2 100%);
-  color: #fff; border-radius: 18px; padding: 24px 26px;
-  box-shadow: 0 10px 30px rgba(37,99,235,.18);
+/* ═══════════════════════════════════════════════
+   HERO SECTION
+═══════════════════════════════════════════════ */
+.hero-wrap {
+  background: linear-gradient(135deg, #0c1445 0%, #1a3a8f 45%, #0e7490 100%);
+  border-radius: 20px;
+  padding: 32px 34px 28px;
+  margin-bottom: 4px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(14,116,144,.22);
 }
-.solution-hero .hero-eyebrow { font-size:.75rem; font-weight:700; letter-spacing:.09em; color:#bfdbfe; }
-.solution-hero .hero-title { font-size:1.65rem; font-weight:800; line-height:1.25; margin-top:6px; }
-.solution-hero .hero-desc  { font-size:.88rem; color:#dbeafe; margin-top:8px; }
-.solution-bullet { background: rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px 14px; height:100%; }
-.solution-bullet .label { font-size:.72rem; color:#bfdbfe; font-weight:700; }
-.solution-bullet .value { font-size:1.3rem; font-weight:800; margin-top:4px; }
-.solution-note { background:#eff6ff; color:#1d4ed8; font-size:.78rem; font-weight:700; border-radius:10px; padding:8px 12px; }
-.priority-card { border-left:5px solid #f59e0b; background:#fffaf0; }
-.maint-card { border-left:5px solid #dc2626; background:#fff5f5; }
-.insight-box { border-radius:12px; padding:14px 16px; border:1px solid #e2e8f0; background:#fff; }
-.insight-title { font-size:.78rem; font-weight:700; color:#64748b; margin-bottom:6px; }
-.insight-value { font-size:1.45rem; font-weight:800; color:#0f172a; }
-.compare-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; }
+.hero-wrap::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 280px; height: 280px;
+  background: rgba(255,255,255,.035);
+  border-radius: 50%;
+}
+.hero-wrap::after {
+  content: '';
+  position: absolute; bottom: -80px; right: 120px;
+  width: 200px; height: 200px;
+  background: rgba(99,179,237,.06);
+  border-radius: 50%;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  color: #93c5fd;
+  font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+  padding: 4px 12px; border-radius: 20px;
+  margin-bottom: 14px;
+}
+.hero-main-title {
+  font-size: 2rem; font-weight: 900; color: #fff;
+  line-height: 1.2; letter-spacing: -.02em;
+  margin-bottom: 8px;
+}
+.hero-main-title span { color: #34d399; }
+.hero-sub {
+  font-size: .9rem; color: #bfdbfe; font-weight: 500;
+  margin-bottom: 16px;
+}
+.hero-alert-bar {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(239,68,68,.18);
+  border: 1px solid rgba(239,68,68,.35);
+  color: #fca5a5;
+  font-size: .82rem; font-weight: 700;
+  padding: 8px 16px; border-radius: 10px;
+}
+.hero-alert-bar i { font-size: 1rem; color: #f87171; }
+
+/* ═══════════════════════════════════════════════
+   KPI 카드 — 절감 포커스
+═══════════════════════════════════════════════ */
+.kpi-saving-main {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  border-radius: 18px;
+  padding: 24px 26px;
+  color: #fff;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 28px rgba(124,58,237,.28);
+}
+.kpi-saving-main::before {
+  content: '';
+  position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,.07);
+  border-radius: 50%;
+}
+.kpi-saving-main .kpi-badge {
+  font-size: .68rem; font-weight: 700; letter-spacing: .08em;
+  background: rgba(255,255,255,.15); padding: 3px 10px;
+  border-radius: 20px; display: inline-block; margin-bottom: 10px;
+}
+.kpi-saving-main .kpi-label { font-size: .8rem; color: #ddd6fe; font-weight: 600; }
+.kpi-saving-main .kpi-num {
+  font-size: 2.6rem; font-weight: 900; line-height: 1.1;
+  letter-spacing: -.03em; margin: 6px 0 4px;
+}
+.kpi-saving-main .kpi-unit { font-size: 1rem; font-weight: 600; opacity: .8; }
+.kpi-saving-main .kpi-annual {
+  font-size: .82rem; color: #c4b5fd; margin-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.12); padding-top: 10px;
+}
+.kpi-saving-main .kpi-annual strong { color: #a5f3fc; font-size: 1rem; }
+
+.kpi-sub-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  height: 100%;
+  position: relative; overflow: hidden;
+}
+.kpi-sub-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: var(--kpi-accent, #2563eb);
+  border-radius: 0 0 16px 16px;
+}
+.kpi-sub-card .sc-icon {
+  width: 40px; height: 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  background: var(--kpi-bg, #eff6ff);
+  color: var(--kpi-accent, #2563eb);
+  margin-bottom: 12px;
+}
+.kpi-sub-card .sc-label { font-size: .74rem; color: #64748b; font-weight: 600; }
+.kpi-sub-card .sc-value {
+  font-size: 1.65rem; font-weight: 800; color: #0f172a;
+  line-height: 1.2; margin: 4px 0 2px;
+}
+.kpi-sub-card .sc-unit { font-size: .8rem; color: #64748b; font-weight: 500; }
+.kpi-sub-card .sc-note { font-size: .72rem; color: #94a3b8; margin-top: 6px; }
+
+/* ═══════════════════════════════════════════════
+   진단 결과 박스
+═══════════════════════════════════════════════ */
+.diag-box {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  padding: 20px 24px;
+}
+.diag-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.diag-header-left { display: flex; align-items: center; gap: 10px; }
+.diag-title { font-size: .9rem; font-weight: 800; color: #0f172a; }
+.diag-sub   { font-size: .75rem; color: #64748b; margin-top: 2px; }
+.diag-grade-badge {
+  font-size: 1.3rem; font-weight: 900; padding: 6px 18px;
+  border-radius: 10px; line-height: 1;
+}
+.diag-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #f1f5f9;
+  margin-bottom: 8px;
+}
+.diag-item:last-child { margin-bottom: 0; }
+.diag-item-label { font-size: .8rem; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.diag-item-val { font-size: 1.05rem; font-weight: 800; }
+.diag-alert {
+  background: linear-gradient(135deg, #fef2f2, #fff1f1);
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.diag-alert i { color: #ef4444; font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
+.diag-alert-text { font-size: .8rem; color: #7f1d1d; line-height: 1.55; }
+.diag-alert-text strong { color: #dc2626; }
+
+/* ═══════════════════════════════════════════════
+   비효율 TOP3
+═══════════════════════════════════════════════ */
+.top3-wrap {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  padding: 20px 24px;
+}
+.top3-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.top3-title { font-size: .9rem; font-weight: 800; color: #0f172a; }
+.top3-badge {
+  font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+  background: #fef3c7; color: #92400e;
+  border: 1px solid #fde68a;
+  padding: 3px 10px; border-radius: 20px;
+}
+.top3-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  background: #fafafa;
+  margin-bottom: 10px;
+  transition: box-shadow .2s;
+}
+.top3-item:hover { box-shadow: 0 4px 14px rgba(0,0,0,.07); }
+.top3-item:last-child { margin-bottom: 0; }
+.top3-rank {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; font-weight: 900; flex-shrink: 0;
+  margin-top: 2px;
+}
+.rank-1 { background: #fef3c7; color: #92400e; }
+.rank-2 { background: #f1f5f9; color: #475569; }
+.rank-3 { background: #fdf4ff; color: #7e22ce; }
+.top3-info { flex: 1; min-width: 0; }
+.top3-name { font-size: .87rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.top3-status { font-size: .76rem; margin-bottom: 3px; }
+.top3-comment { font-size: .75rem; color: #64748b; }
+.top3-saving { text-align: right; flex-shrink: 0; }
+.top3-saving-num { font-size: 1.1rem; font-weight: 800; color: #7c3aed; }
+.top3-saving-label { font-size: .68rem; color: #94a3b8; margin-top: 2px; }
+.top3-saving-rate { font-size: .78rem; font-weight: 700; color: #059669; margin-top: 3px; }
+
+/* ═══════════════════════════════════════════════
+   차트 영역
+═══════════════════════════════════════════════ */
+.chart-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  padding: 20px 24px;
+}
+.chart-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.chart-title { font-size: .88rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 7px; }
+.chart-note {
+  font-size: .7rem; font-weight: 700; color: #2563eb;
+  background: #eff6ff; border: 1px solid #bfdbfe;
+  padding: 3px 9px; border-radius: 20px;
+}
+
+/* ═══════════════════════════════════════════════
+   하단 운전로그 / 시뮬레이션
+═══════════════════════════════════════════════ */
+.bottom-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  padding: 20px 24px;
+}
+.sim-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 14px;
+  background: #f8fafc; border-radius: 10px;
+  border: 1px solid #f1f5f9;
+  margin-bottom: 8px;
+}
+.sim-row:last-child { margin-bottom: 0; }
+.sim-before-after {
+  font-size: .74rem; color: #64748b; margin-top: 3px;
+}
+.sim-saving-num { font-size: 1.05rem; font-weight: 800; color: #059669; }
+.sim-saving-rate { font-size: .72rem; color: #94a3b8; text-align: right; }
+
+/* ─── 전월 대비 ─── */
+.kwh-trend-up   { color: #dc2626; font-weight: 700; }
+.kwh-trend-down { color: #059669; font-weight: 700; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="solution-hero mb-3">
-  <div class="row g-3 align-items-center">
-    <div class="col-lg-7">
-      <div class="hero-eyebrow">ENERGY SAVING SOLUTION DEMO</div>
-      <div class="hero-title">설비 운영 데이터를 기반으로 에너지 낭비를 분석하고 절감 효과를 예측하는 시스템</div>
-      <div class="hero-desc">관리 기능보다 절감 효과와 개선 우선순위를 먼저 보여주어 고객이 5분 이내에 핵심 가치를 이해하도록 구성했습니다.</div>
+
+{# ══════════════════════════════════════════════════
+   HERO — 메인 메시지
+══════════════════════════════════════════════════ #}
+<div class="hero-wrap mb-4">
+  <div class="row align-items-center g-3">
+    <div class="col-lg-8">
+      <div class="hero-eyebrow">
+        <i class="bi bi-lightning-charge-fill"></i>
+        ENERGY COST REDUCTION SOLUTION
+      </div>
+      <div class="hero-main-title">
+        에너지 낭비 분석 및 <span>절감 솔루션</span>
+      </div>
+      <div class="hero-sub">
+        설비 운영 데이터를 기반으로 절감 효과를 정량적으로 예측합니다
+      </div>
+      <div class="hero-alert-bar">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        지금 운영 방식 그대로 두면 비용이 계속 새고 있습니다
+      </div>
     </div>
-    <div class="col-lg-5">
-      <div class="row g-2">
-        <div class="col-6">
-          <div class="solution-bullet text-center">
-            <div class="label">월 예상 절감액</div>
-            <div class="value money-highlight" style="color:#fde68a;">{{ "{:,.0f}".format(total_saving) }}원</div>
-          </div>
+    <div class="col-lg-4 text-lg-end">
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px 18px;">
+        <div style="font-size:.72rem;color:#93c5fd;font-weight:700;margin-bottom:8px;">지금 즉시 조치 시 기대 효과</div>
+        <div style="font-size:2rem;font-weight:900;color:#34d399;line-height:1.1;letter-spacing:-.02em;">
+          {{ "{:,.0f}".format(monthly_saving) }}<span style="font-size:1rem;font-weight:600;color:#6ee7b7;">원/월</span>
         </div>
-        <div class="col-6">
-          <div class="solution-bullet text-center">
-            <div class="label">연간 예상 절감액</div>
-            <div class="value money-highlight" style="color:#bbf7d0;">{{ "{:,.0f}".format(total_saving * 12) }}원</div>
-          </div>
+        <div style="font-size:.82rem;color:#bfdbfe;margin-top:6px;">
+          연간 <strong style="color:#a5f3fc;font-size:1rem;">{{ "{:,.0f}".format(annual_saving) }}원</strong> 절감 가능
         </div>
-        <div class="col-12">
-          <div class="solution-bullet text-center">
-            <div class="label">누적 CO₂ 절감 효과</div>
-            <div class="value">{{ total_co2 }} tCO₂</div>
-          </div>
+        <div style="border-top:1px solid rgba(255,255,255,.1);margin-top:10px;padding-top:10px;font-size:.75rem;color:#7dd3fc;">
+          절감 전력량 <strong style="color:#e0f2fe;">{{ "{:,.1f}".format(total_saving_kwh) }} kWh/월</strong> &nbsp;|&nbsp;
+          CO₂ <strong style="color:#bbf7d0;">{{ total_co2 }} tCO₂</strong>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="row g-3 mb-3">
-  <div class="col-6 col-lg-3"><div class="kpi-card" style="--kpi-color:#2563eb;--kpi-bg:#eff6ff;"><div class="kpi-icon"><i class="bi bi-cpu-fill"></i></div><div class="kpi-label">총 설비 수</div><div class="kpi-value">{{ total_eq }}<span class="unit">대</span></div><div class="kpi-sub">등록 기준 전체 설비</div><div class="kpi-trend" style="color:#64748b;">가동 {{ running_eq }} / 점검 {{ check_eq }} / 정지 {{ stop_eq }}</div></div></div>
-  <div class="col-6 col-lg-3"><div class="kpi-card" style="--kpi-color:#059669;--kpi-bg:#f0fdf4;"><div class="kpi-icon"><i class="bi bi-lightning-charge-fill"></i></div><div class="kpi-label">가동 설비 수</div><div class="kpi-value">{{ running_eq }}<span class="unit">대</span></div><div class="kpi-sub">즉시 진단 가능한 설비</div><div class="kpi-trend" style="color:#059669;">가동률 {% if total_eq %}{{ "%.0f"|format(running_eq/total_eq*100) }}%{% else %}0%{% endif %}</div></div></div>
-  <div class="col-6 col-lg-3"><div class="kpi-card" style="--kpi-color:#d97706;--kpi-bg:#fffbeb;"><div class="kpi-icon"><i class="bi bi-plug-fill"></i></div><div class="kpi-label">월 전력사용량</div><div class="kpi-value">{{ "{:,.0f}".format(month_kwh) }}<span class="unit">kWh</span></div><div class="kpi-sub">{{ today.strftime('%Y-%m') }} 누계</div><div class="kpi-trend" style="color:{% if kwh_diff <= 0 %}#059669{% else %}#dc2626{% endif %};">전월 대비 {{ "{:+,.0f}".format(kwh_diff) }} kWh</div></div></div>
-  <div class="col-6 col-lg-3"><div class="kpi-card" style="--kpi-color:#7c3aed;--kpi-bg:#f5f3ff;"><div class="kpi-icon"><i class="bi bi-piggy-bank-fill"></i></div><div class="kpi-label">예상 절감액</div><div class="kpi-value money-highlight money-purple">{{ "{:,.0f}".format(total_saving) }}<span class="unit">원/월</span></div><div class="kpi-sub">고객 설득용 핵심 수치</div><div class="kpi-trend" style="color:#7c3aed;">연 {{ "{:,.0f}".format(total_saving*12) }}원 절감 가능</div></div></div>
+{# ══════════════════════════════════════════════════
+   KPI 4종
+══════════════════════════════════════════════════ #}
+<div class="row g-3 mb-4">
+  {# 1) 월 예상 절감액 — 가장 크게 #}
+  <div class="col-lg-4 col-md-6">
+    <div class="kpi-saving-main">
+      <div class="kpi-badge">★ PRIORITY KPI</div>
+      <div class="kpi-label">월 예상 절감액</div>
+      <div class="kpi-num">
+        {{ "{:,.0f}".format(monthly_saving) }}<span class="kpi-unit">원</span>
+      </div>
+      <div style="font-size:.76rem;color:#ddd6fe;">현재 운전 조건 기준 최적화 시 절감 가능 금액</div>
+      <div class="kpi-annual">
+        연간 절감액 &nbsp;<strong>{{ "{:,.0f}".format(annual_saving) }}원</strong>
+      </div>
+    </div>
+  </div>
+
+  {# 2) 절감 전력량 #}
+  <div class="col-lg-2 col-md-6 col-6">
+    <div class="kpi-sub-card" style="--kpi-accent:#0891b2;--kpi-bg:#ecfeff;">
+      <div class="sc-icon"><i class="bi bi-plug-fill"></i></div>
+      <div class="sc-label">월 절감 전력량</div>
+      <div class="sc-value">{{ "{:,.1f}".format(total_saving_kwh) }}</div>
+      <div class="sc-unit">kWh / 월</div>
+      <div class="sc-note">최적화 시 절감 가능량</div>
+    </div>
+  </div>
+
+  {# 3) CO2 절감 #}
+  <div class="col-lg-2 col-md-6 col-6">
+    <div class="kpi-sub-card" style="--kpi-accent:#059669;--kpi-bg:#f0fdf4;">
+      <div class="sc-icon"><i class="bi bi-tree-fill"></i></div>
+      <div class="sc-label">CO₂ 절감량</div>
+      <div class="sc-value">{{ total_co2 }}</div>
+      <div class="sc-unit">tCO₂</div>
+      <div class="sc-note">탄소중립 기여 효과</div>
+    </div>
+  </div>
+
+  {# 4) 이번 달 전력사용량 #}
+  <div class="col-lg-4 col-md-6">
+    <div class="kpi-sub-card" style="--kpi-accent:#d97706;--kpi-bg:#fffbeb;">
+      <div class="d-flex align-items-start justify-content-between">
+        <div>
+          <div class="sc-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+          <div class="sc-label">이번 달 전력사용량</div>
+          <div class="sc-value">{{ "{:,.0f}".format(month_kwh) }}</div>
+          <div class="sc-unit">kWh &nbsp;({{ today.strftime('%Y-%m') }})</div>
+        </div>
+        <div style="text-align:right;padding-top:4px;">
+          <div style="font-size:.72rem;color:#94a3b8;margin-bottom:4px;">전월 대비</div>
+          {% if kwh_diff > 0 %}
+          <div class="kwh-trend-up"><i class="bi bi-arrow-up-short"></i>{{ "{:+,.0f}".format(kwh_diff) }} kWh</div>
+          {% elif kwh_diff < 0 %}
+          <div class="kwh-trend-down"><i class="bi bi-arrow-down-short"></i>{{ "{:,.0f}".format(kwh_diff|abs) }} kWh</div>
+          {% else %}
+          <div style="color:#64748b;font-size:.82rem;">변동 없음</div>
+          {% endif %}
+          <div style="font-size:.72rem;color:#94a3b8;margin-top:6px;">
+            가동 {{ running_eq }} / 점검 {{ check_eq }} / 정지 {{ stop_eq }}대
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:12px;border-top:1px solid #fef3c7;padding-top:10px;">
+        <div style="font-size:.74rem;color:#92400e;font-weight:600;">
+          <i class="bi bi-bar-chart-fill me-1"></i>총 {{ total_eq }}대 설비 운영 중 &nbsp;·&nbsp; 가동률 {% if total_eq %}{{ "%.0f"|format(running_eq/total_eq*100) }}%{% else %}0%{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="row g-3 mb-3">
-  <div class="col-lg-7"><div class="card-box h-100"><div class="card-title"><i class="bi bi-bar-chart-fill text-primary"></i> 설비별 전력사용량 그래프 <span class="solution-note ms-auto">전력 다소비 설비 우선 제안</span></div><canvas id="chartEquipPower" height="165"></canvas></div></div>
-  <div class="col-lg-5"><div class="card-box h-100"><div class="card-title"><i class="bi bi-graph-up-arrow text-success"></i> 월별 전력 추이 그래프 <span class="solution-note ms-auto">최근 6개월</span></div><canvas id="chartMonthlyPower" height="165"></canvas></div></div>
-</div>
+{# ══════════════════════════════════════════════════
+   진단 결과 박스 + 비효율 TOP3
+══════════════════════════════════════════════════ #}
+<div class="row g-3 mb-4">
 
-<div class="row g-3 mb-3">
-  <div class="col-lg-6">
-    <div class="card-box priority-card h-100">
-      <div class="card-title"><i class="bi bi-exclamation-triangle-fill" style="color:#f59e0b;"></i> 비효율 설비 TOP 3 <span class="tag-chip ms-auto">{{ analysis_base_month }}</span></div>
+  {# 진단 결과 #}
+  <div class="col-lg-4">
+    <div class="diag-box h-100">
+      <div class="diag-header">
+        <div class="diag-header-left">
+          <div style="width:36px;height:36px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#d97706;">
+            <i class="bi bi-clipboard-data-fill"></i>
+          </div>
+          <div>
+            <div class="diag-title">현재 설비 진단 결과</div>
+            <div class="diag-sub">{{ analysis_base_month }} 분석 기준</div>
+          </div>
+        </div>
+        <div class="diag-grade-badge badge
+          {% if grade_badge == 'success' %}bg-success{% elif grade_badge == 'info' %}bg-info{% elif grade_badge == 'warning' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+          종합 {{ overall_grade }}등급
+        </div>
+      </div>
+
+      <div class="diag-item">
+        <div class="diag-item-label"><i class="bi bi-cpu text-primary"></i> 전체 설비</div>
+        <div class="diag-item-val text-primary">{{ total_eq }}<span style="font-size:.8rem;font-weight:500;color:#64748b;">대</span></div>
+      </div>
+      <div class="diag-item">
+        <div class="diag-item-label"><i class="bi bi-exclamation-triangle text-warning"></i> 비효율 운전 설비</div>
+        <div class="diag-item-val text-warning">{{ inefficient_count }}<span style="font-size:.8rem;font-weight:500;color:#64748b;">대</span></div>
+      </div>
+      <div class="diag-item">
+        <div class="diag-item-label"><i class="bi bi-percent text-danger"></i> 비효율 비율</div>
+        <div class="diag-item-val text-danger">{{ inefficient_rate }}<span style="font-size:.8rem;font-weight:500;color:#64748b;">%</span></div>
+      </div>
+      <div class="diag-item">
+        <div class="diag-item-label"><i class="bi bi-check2-circle text-success"></i> 가동 설비</div>
+        <div class="diag-item-val text-success">{{ running_eq }}<span style="font-size:.8rem;font-weight:500;color:#64748b;">대</span></div>
+      </div>
+
+      <div class="diag-alert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <div class="diag-alert-text">
+          전체 설비의 <strong>{{ inefficient_rate }}%</strong>가 비효율 운전 중입니다.<br>
+          즉시 최적화 조치 시 <strong>월 {{ "{:,.0f}".format(monthly_saving) }}원</strong> 절감이 가능합니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# 비효율 TOP3 #}
+  <div class="col-lg-8">
+    <div class="top3-wrap h-100">
+      <div class="top3-header">
+        <div>
+          <div class="top3-title"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>비효율 설비 TOP 3 — 즉시 개선 대상</div>
+          <div style="font-size:.74rem;color:#64748b;margin-top:3px;">절감 가능 금액 기준 우선순위 정렬 &nbsp;·&nbsp; {{ analysis_base_month }}</div>
+        </div>
+        <span class="top3-badge">절감 우선순위</span>
+      </div>
+
       {% if top_inefficient %}
         {% for item in top_inefficient %}
-        <div class="insight-box mb-2">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <div class="insight-title">{{ item.name }}</div>
-              <div style="font-size:.84rem;color:#475569;">효율 상태: <strong>{{ item.status_text }}</strong></div>
-              <div style="font-size:.83rem;color:#475569;">코멘트: {{ item.comment }}</div>
-              <div style="font-size:.83rem;color:#dc2626;font-weight:700;margin-top:4px;">절감 가능성이 높은 설비입니다.</div>
+        <div class="top3-item">
+          <div class="top3-rank rank-{{ item.rank }}">{{ item.rank }}</div>
+          <div class="top3-info">
+            <div class="top3-name">{{ item.name }}</div>
+            <div class="top3-status">
+              <span class="badge
+                {% if item.grade_badge == 'success' %}bg-success
+                {% elif item.grade_badge == 'info' %}bg-info
+                {% elif item.grade_badge == 'warning' %}bg-warning text-dark
+                {% else %}bg-danger{% endif %}
+                " style="font-size:.68rem;">{{ item.grade_label }}</span>
+              <span style="font-size:.78rem;color:#64748b;margin-left:6px;">{{ item.status_text }}</span>
             </div>
-            <div style="text-align:right;">
-              <div class="insight-value" style="font-size:1.15rem;color:#7c3aed;">{{ "{:,.0f}".format(item.saving_amount or 0) }}원</div>
-              <div style="font-size:.72rem;color:#94a3b8;">월 예상 절감액</div>
-            </div>
+            <div class="top3-comment"><i class="bi bi-arrow-right-circle text-muted me-1"></i>{{ item.comment }}</div>
+          </div>
+          <div class="top3-saving">
+            <div class="top3-saving-num">{{ "{:,.0f}".format(item.saving_amount) }}원</div>
+            <div class="top3-saving-label">월 예상 절감액</div>
+            {% if item.saving_rate > 0 %}
+            <div class="top3-saving-rate">▼ {{ item.saving_rate }}% 절감 가능</div>
+            {% endif %}
           </div>
         </div>
         {% endfor %}
       {% else %}
-        <div class="text-muted">표시할 비효율 설비가 없습니다.</div>
+        <div style="text-align:center;padding:30px;color:#94a3b8;">
+          <i class="bi bi-check-circle-fill text-success" style="font-size:2rem;"></i>
+          <div style="margin-top:8px;font-size:.85rem;">현재 비효율 설비가 감지되지 않았습니다.</div>
+        </div>
       {% endif %}
-    </div>
-  </div>
-  <div class="col-lg-6">
-    <div class="card-box maint-card h-100">
-      <div class="card-title"><i class="bi bi-tools" style="color:#dc2626;"></i> 정비 필요 설비 <span class="solution-note ms-auto">30일 이내</span></div>
-      {% if upcoming_maint %}
-        {% for u in upcoming_maint %}
-        <div class="insight-box mb-2" style="background:#fff;">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <div class="insight-title">{{ u.equipment.name if u.equipment else '—' }}</div>
-              <div style="font-size:.84rem;color:#475569;">다음 점검일 {{ u.next_date }}</div>
-              <div style="font-size:.82rem;color:#dc2626;font-weight:700;margin-top:4px;">정비 점검 제안이 필요한 설비입니다.</div>
-            </div>
-            <div style="text-align:right;"><div class="insight-value" style="font-size:1.15rem;color:#dc2626;">D-{{ (u.next_date - today).days }}</div><div style="font-size:.72rem;color:#94a3b8;">점검 예정</div></div>
-          </div>
+
+      {# 총 절감 가능액 합계 #}
+      {% if top_inefficient %}
+      <div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #ddd6fe;border-radius:12px;padding:14px 16px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:.8rem;color:#5b21b6;font-weight:700;"><i class="bi bi-calculator me-1"></i>TOP3 설비 합산 절감 가능액</div>
+        <div style="font-size:1.3rem;font-weight:900;color:#6d28d9;">
+          {{ "{:,.0f}".format(top_inefficient | sum(attribute='saving_amount')) }}원<span style="font-size:.78rem;font-weight:500;color:#7c3aed;">/월</span>
         </div>
-        {% endfor %}
-      {% else %}
-        <div class="text-muted">임박한 정비 설비가 없습니다.</div>
+      </div>
       {% endif %}
     </div>
   </div>
 </div>
 
+{# ══════════════════════════════════════════════════
+   차트 2종
+══════════════════════════════════════════════════ #}
+<div class="row g-3 mb-4">
+  {# 설비별 전력사용량 #}
+  <div class="col-lg-6">
+    <div class="chart-card h-100">
+      <div class="chart-header">
+        <div class="chart-title">
+          <i class="bi bi-bar-chart-fill text-primary"></i>
+          설비별 전력사용량
+        </div>
+        <span class="chart-note">{{ today.strftime('%Y-%m') }} 기준 · 전력 다소비 순</span>
+      </div>
+      <canvas id="chartEquipPower" height="200"></canvas>
+    </div>
+  </div>
+
+  {# 월별 전력 추이 + 절감 가능량 #}
+  <div class="col-lg-6">
+    <div class="chart-card h-100">
+      <div class="chart-header">
+        <div class="chart-title">
+          <i class="bi bi-graph-up-arrow text-success"></i>
+          월별 전력 추이 &amp; 절감 가능량
+        </div>
+        <span class="chart-note">최근 6개월</span>
+      </div>
+      <canvas id="chartMonthlyPower" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+{# ══════════════════════════════════════════════════
+   하단: 운전 로그 + 절감 시뮬레이션
+══════════════════════════════════════════════════ #}
 <div class="row g-3">
-  <div class="col-lg-7"><div class="card-box"><div class="card-title"><i class="bi bi-activity text-info"></i> 최근 운전 로그</div><div class="table-responsive"><table class="table table-clean mb-0"><thead><tr><th>일자</th><th>설비</th><th>가동(h)</th><th>전력(kWh)</th><th>부하율</th><th>압력</th></tr></thead><tbody>{% for log in recent_logs %}<tr><td>{{ log.log_date }}</td><td>{{ log.equipment.name if log.equipment else '—' }}</td><td>{{ log.run_hours }}</td><td class="fw-semibold">{{ log.power_kwh }}</td><td>{% set lr = log.load_rate or 0 %}<span class="badge {% if lr > 80 %}bg-danger{% elif lr > 65 %}bg-warning text-dark{% else %}bg-success{% endif %}">{{ lr }}%</span></td><td>{{ log.pressure }}</td></tr>{% endfor %}</tbody></table></div></div></div>
-  <div class="col-lg-5"><div class="card-box"><div class="card-title"><i class="bi bi-calculator text-primary"></i> 절감 시뮬레이션 요약</div><div style="background:#eff6ff;border-radius:12px;padding:12px 14px;margin-bottom:12px;"><div style="font-size:.75rem;color:#64748b;font-weight:700;">이번 달 예상 절감액</div><div class="money-highlight money-purple">{{ "{:,.0f}".format(total_sim_saving) }}원</div><div style="font-size:.75rem;color:#64748b;font-weight:700;margin-top:8px;">연간 예상 절감액</div><div class="money-highlight money-green" style="font-size:2rem;">{{ "{:,.0f}".format(total_sim_saving*12) }}원</div></div>{% for sim in sims %}<div class="compare-box mb-2"><div class="d-flex justify-content-between"><div><div style="font-size:.83rem;font-weight:700;">{{ sim.title|truncate(30,True,'..') }}</div><div style="font-size:.74rem;color:#64748b;">기존 {{ "{:,.0f}".format(sim.before_kwh) }} → 개선 {{ "{:,.0f}".format(sim.after_kwh) }} kWh</div></div><div style="text-align:right;"><div style="font-size:1.05rem;font-weight:800;color:#059669;">{{ "{:,.0f}".format(sim.saving_amount) }}원</div><div style="font-size:.7rem;color:#94a3b8;">절감률 {% if sim.before_kwh %}{{ "%.1f"|format(sim.saving_kwh / sim.before_kwh * 100) }}%{% else %}-{% endif %}</div></div></div></div>{% endfor %}</div></div>
+  {# 최근 운전 로그 #}
+  <div class="col-lg-7">
+    <div class="bottom-card">
+      <div class="card-title"><i class="bi bi-activity text-info"></i> 최근 운전 로그</div>
+      <div class="table-responsive">
+        <table class="table table-clean mb-0">
+          <thead>
+            <tr>
+              <th>일자</th><th>설비명</th><th>가동(h)</th>
+              <th>전력사용량(kWh)</th><th>부하율</th><th>압력</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in recent_logs %}
+            <tr>
+              <td>{{ log.log_date }}</td>
+              <td>{{ log.equipment.name if log.equipment else '—' }}</td>
+              <td>{{ log.run_hours }}</td>
+              <td class="fw-semibold">{{ log.power_kwh }}</td>
+              <td>
+                {% set lr = log.load_rate or 0 %}
+                <span class="badge {% if lr > 80 %}bg-danger{% elif lr > 65 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                  {{ lr }}%
+                </span>
+              </td>
+              <td>{{ log.pressure }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {# 절감 시뮬레이션 요약 #}
+  <div class="col-lg-5">
+    <div class="bottom-card h-100">
+      <div class="card-title"><i class="bi bi-calculator text-purple"></i> 절감 시뮬레이션 요약</div>
+
+      {# 총 절감액 강조 #}
+      <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div style="font-size:.74rem;color:#64748b;font-weight:700;">월 예상 절감액 합계</div>
+            <div class="money-highlight money-purple" style="font-size:2rem;margin-top:4px;">
+              {{ "{:,.0f}".format(total_sim_saving) }}원
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:.74rem;color:#64748b;font-weight:700;">연간 절감액</div>
+            <div class="money-highlight money-green" style="font-size:1.6rem;margin-top:4px;">
+              {{ "{:,.0f}".format(total_sim_saving * 12) }}원
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# 시뮬레이션 개별 항목 #}
+      {% for sim in sims %}
+      <div class="sim-row">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:.84rem;font-weight:700;color:#0f172a;">{{ sim.title|truncate(28,True,'..') }}</div>
+          <div class="sim-before-after">
+            기존 {{ "{:,.0f}".format(sim.before_kwh) }} kWh
+            <i class="bi bi-arrow-right text-muted mx-1"></i>
+            개선 {{ "{:,.0f}".format(sim.after_kwh) }} kWh
+          </div>
+        </div>
+        <div style="text-align:right;margin-left:12px;flex-shrink:0;">
+          <div class="sim-saving-num">{{ "{:,.0f}".format(sim.saving_amount) }}원</div>
+          <div class="sim-saving-rate">
+            {% if sim.before_kwh %}
+              절감률 {{ "%.1f"|format(sim.saving_kwh / sim.before_kwh * 100) }}%
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <a href="/simulation/" class="btn btn-sm btn-outline-primary w-100 mt-3" style="font-size:.8rem;border-radius:9px;">
+        <i class="bi bi-arrow-right-circle me-1"></i>전체 절감 시뮬레이션 보기
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
@@ -130,12 +622,100 @@
 <script>
 Chart.defaults.font.family = "'Noto Sans KR', sans-serif";
 Chart.defaults.font.size = 12;
-const epLabels = [{% for r in equip_power %}"{{ r.name|truncate(14,True,'..') }}"{% if not loop.last %},{% endif %}{% endfor %}];
-const epData   = [{% for r in equip_power %}{{ r.total|round(1) if r.total else 0 }}{% if not loop.last %},{% endif %}{% endfor %}];
-new Chart(document.getElementById('chartEquipPower'), {type:'bar',data:{labels:epLabels,datasets:[{label:'kWh',data:epData,backgroundColor:['#2563eb','#7c3aed','#059669','#d97706','#0891b2'],borderRadius:8,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#f1f5f9'},ticks:{callback:v=>v.toLocaleString()}},y:{grid:{display:false}}}}});
+
+/* ── 설비별 전력사용량 가로 막대 ── */
+const epLabels = [{% for r in equip_power %}"{{ r.name|truncate(16,True,'..') }}"{% if not loop.last %},{% endif %}{% endfor %}];
+const epData   = [{% for r in equip_power %}{{ r.total }}{% if not loop.last %},{% endif %}{% endfor %}];
+const epColors = ['#2563eb','#7c3aed','#059669','#d97706','#0891b2'];
+
+new Chart(document.getElementById('chartEquipPower'), {
+  type: 'bar',
+  data: {
+    labels: epLabels,
+    datasets: [{
+      label: 'kWh',
+      data: epData,
+      backgroundColor: epColors,
+      borderRadius: 7,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ' ' + ctx.raw.toLocaleString() + ' kWh'
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: { color: '#f1f5f9' },
+        ticks: { callback: v => v.toLocaleString() }
+      },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+/* ── 월별 전력 추이 + 절감 가능량 ── */
 const mpLabels = [{% for r in monthly_power %}"{{ r.analysis_month }}"{% if not loop.last %},{% endif %}{% endfor %}];
-const mpKwh = [{% for r in monthly_power %}{{ (r.kwh|round(1)) if r.kwh else 0 }}{% if not loop.last %},{% endif %}{% endfor %}];
+const mpKwh    = [{% for r in monthly_power %}{{ (r.kwh|round(1)) if r.kwh else 0 }}{% if not loop.last %},{% endif %}{% endfor %}];
 const mpSaving = [{% for r in monthly_power %}{{ (r.saving|round(1)) if r.saving else 0 }}{% if not loop.last %},{% endif %}{% endfor %}];
-new Chart(document.getElementById('chartMonthlyPower'), {type:'line',data:{labels:mpLabels,datasets:[{label:'전력사용(kWh)',data:mpKwh,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:.35,pointRadius:4,borderWidth:2.5},{label:'절감가능(kWh)',data:mpSaving,borderColor:'#059669',backgroundColor:'rgba(5,150,105,.05)',fill:true,tension:.35,pointRadius:4,borderWidth:2,borderDash:[5,4]}]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,grid:{color:'#f1f5f9'},ticks:{callback:v=>v.toLocaleString()}},x:{grid:{display:false}}}}});
+
+new Chart(document.getElementById('chartMonthlyPower'), {
+  type: 'line',
+  data: {
+    labels: mpLabels,
+    datasets: [
+      {
+        label: '전력사용량 (kWh)',
+        data: mpKwh,
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37,99,235,.08)',
+        fill: true,
+        tension: .38,
+        pointRadius: 5,
+        pointBackgroundColor: '#2563eb',
+        borderWidth: 2.5,
+      },
+      {
+        label: '절감 가능량 (kWh)',
+        data: mpSaving,
+        borderColor: '#059669',
+        backgroundColor: 'rgba(5,150,105,.06)',
+        fill: true,
+        tension: .38,
+        pointRadius: 5,
+        pointBackgroundColor: '#059669',
+        borderWidth: 2,
+        borderDash: [6, 4],
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top', labels: { boxWidth: 12, padding: 16 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.raw.toLocaleString() + ' kWh'
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: '#f1f5f9' },
+        ticks: { callback: v => v.toLocaleString() }
+      },
+      x: { grid: { display: false } }
+    }
+  }
+});
 </script>
 {% endblock %}
